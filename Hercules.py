@@ -1,11 +1,12 @@
 from time import sleep
+from File import File
 
 
 class Hercules:
     def __init__(self, binary):
         self.binary = binary
 
-    def transfer(self, destination, file):
-        print(f"HERCULES: SENDING file {file} to {destination}")
-        sleep(3)
+    def transfer(self, file: File):
+        print(f"HERCULES: SENDING file {file.name} ({file.local_path}) to {file.remote_path}")
+        sleep(1)
         print("HERCULES: Transfer complete")
