@@ -2,24 +2,43 @@ from src.Hercules import Hercules
 from src.Filemanager import Filemanager
 from src.File import FileStatus
 import pysftp
+from paramiko.ssh_exception import SSHException
 import os
 from time import sleep
 from alive_progress import alive_bar
 
+MAX_RECONNECTION_RETRIES = 5
+
 
 class Manager:
     def __init__(self, target_ip: str, username: str, ssh_key_file: str, temp_dir: str, hercules_path: str) -> None:
+        self.connection_retries = 0
         self.state_file = temp_dir + "/state.json"
-        self.sftp_connection = pysftp.Connection(target_ip, username=username, private_key=ssh_key_file)
+        self.target_ip = target_ip
+        self.username = username
+        self.ssh_key_file = ssh_key_file
+        self.sftp_connection = pysftp.Connection(self.target_ip, username=self.username, private_key=self.ssh_key_file)
         self.filemanager = Filemanager(temp_dir)
         self.filemanager.load_state(self.state_file)
         self.hercules = Hercules(hercules_path)
 
     def start(self, target_dir: str):
-        while True:
-            with self.sftp_connection.cd(target_dir):
-                self.check_for_new_files()
-                self.copy_files()
+        while self.connection_retries < MAX_RECONNECTION_RETRIES:
+            try:
+                with self.sftp_connection.cd(target_dir):
+                    self.check_for_new_files()
+                    self.copy_files()
+            except (SSHException, OSError, AttributeError) as e:
+                print(e)
+                self.connection_retries += 1
+                print(f"Trying to reconnect. Retry {self.connection_retries}/{MAX_RECONNECTION_RETRIES}")
+                try:
+                    self.sftp_connection = pysftp.Connection(
+                        self.target_ip, username=self.username, private_key=self.ssh_key_file
+                    )
+                except Exception as e:
+                    print(e)
+
             self.send_files()
             self.cleanup()
             sleep(5)
