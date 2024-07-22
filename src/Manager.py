@@ -8,12 +8,14 @@ from alive_progress import alive_bar
 
 
 class Manager:
-    def __init__(self, target_ip, username, ssh_key_file, temp_dir, hercules_path) -> None:
+    def __init__(self, target_ip: str, username: str, ssh_key_file: str, temp_dir: str, hercules_path: str) -> None:
+        self.state_file = temp_dir + "/state.json"
         self.sftp_connection = pysftp.Connection(target_ip, username=username, private_key=ssh_key_file)
         self.filemanager = Filemanager(temp_dir)
+        self.filemanager.load_state(self.state_file)
         self.hercules = Hercules(hercules_path)
 
-    def start(self, target_dir):
+    def start(self, target_dir: str):
         while True:
             with self.sftp_connection.cd(target_dir):
                 self.check_for_new_files()
@@ -48,3 +50,4 @@ class Manager:
                 print(f"Removing temp file: {file.local_path}")
                 os.remove(file.local_path)
                 file.status = FileStatus.DELETED
+        self.filemanager.save_state(self.state_file)
