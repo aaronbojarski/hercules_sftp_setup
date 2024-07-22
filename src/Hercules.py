@@ -1,5 +1,5 @@
 from time import sleep
-from File import File
+from src.File import File
 
 
 class Hercules:
