@@ -26,6 +26,8 @@ class Config:
                 self.ssh_key_file = value
             if key == "temp_dir":
                 self.temp_dir = value
+            if key == "target_dir":
+                self.target_dir = value
             if key == "hercules_path":
                 self.hercules_path = value
             if key == "hercules_interface":
