@@ -1,6 +1,7 @@
 from src.Hercules import Hercules
 from src.Filemanager import Filemanager
 from src.File import FileStatus
+from src.Config import Config
 import pysftp
 from paramiko.ssh_exception import SSHException
 import os
@@ -11,16 +12,16 @@ MAX_RECONNECTION_RETRIES = 5
 
 
 class Manager:
-    def __init__(self, target_ip: str, username: str, ssh_key_file: str, temp_dir: str, hercules_path: str) -> None:
+    def __init__(self, config: Config) -> None:
         self.connection_retries = 0
-        self.state_file = temp_dir + "/state.json"
-        self.target_ip = target_ip
-        self.username = username
-        self.ssh_key_file = ssh_key_file
+        self.state_file = config.temp_dir + "/state.json"
+        self.target_ip = config.target_ip
+        self.username = config.username
+        self.ssh_key_file = config.ssh_key_file
         self.sftp_connection = pysftp.Connection(self.target_ip, username=self.username, private_key=self.ssh_key_file)
-        self.filemanager = Filemanager(temp_dir)
+        self.filemanager = Filemanager(config.temp_dir)
         self.filemanager.load_state(self.state_file)
-        self.hercules = Hercules(hercules_path)
+        self.hercules = Hercules(config)
 
     def start(self, target_dir: str):
         while self.connection_retries < MAX_RECONNECTION_RETRIES:
