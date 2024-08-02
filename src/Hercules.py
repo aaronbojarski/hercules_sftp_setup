@@ -13,5 +13,25 @@ class Hercules:
 
     def transfer(self, file: File):
         print(f"HERCULES: SENDING file {file.name} ({file.local_path}) to {file.remote_path}")
-        subprocess.call([self.binary, "-i", self.interface, "-l", self.local_address, "-d", self.destination_address, "-t", file.local_path, "--mtu", "1440", "-p", "1048576", "-np", "4", "-nt", "4"])
+        subprocess.call(
+            [
+                self.binary,
+                "-i",
+                self.interface,
+                "-l",
+                self.local_address,
+                "-d",
+                self.destination_address,
+                "-t",
+                file.local_path,
+                "--mtu",
+                "1440",
+                "-p",
+                "1048576",
+                "-np",
+                "4",
+                "-nt",
+                "4",
+            ]
+        )
         print("HERCULES: Transfer complete")

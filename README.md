@@ -1,8 +1,8 @@
 # Hercules SFTP Setup
-This script is intended to first copy files from a local server. It then starts Hercules jobs tho send each file to a remote destination.
+This script is intended to first copy files from a local server. It then starts a Hercules jobs to send each file to a remote destination.
+Make sure hercules is also started on the destination.
 
-
-### Config
+## Config
 The setup can be configured via a json config file. For this just add a `config.json` file to the main directory with the following contents:
 ```
 {
@@ -17,3 +17,7 @@ The setup can be configured via a json config file. For this just add a `config.
     "hercules_destination_address": ""
 }
 ```
+
+## Open issues
+- does hercules somehow send the filename to the destination?
+- does hercules handle small files? (Had issues with test files that are just a few bytes in size.)

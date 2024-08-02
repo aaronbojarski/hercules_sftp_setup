@@ -16,7 +16,7 @@ class Config:
 
     def load(self, filename: str):
         with open(filename, "r") as f:
-           file_content = json.load(f)
+            file_content = json.load(f)
         for key, value in file_content.items():
             if key == "target_ip":
                 self.target_ip = value
