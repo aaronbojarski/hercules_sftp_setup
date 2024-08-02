@@ -18,15 +18,16 @@ class Manager:
         self.target_ip = config.target_ip
         self.username = config.username
         self.ssh_key_file = config.ssh_key_file
+        self.target_dir = config.target_dir
         self.sftp_connection = pysftp.Connection(self.target_ip, username=self.username, private_key=self.ssh_key_file)
         self.filemanager = Filemanager(config.temp_dir)
         self.filemanager.load_state(self.state_file)
         self.hercules = Hercules(config)
 
-    def start(self, target_dir: str):
+    def start(self):
         while self.connection_retries < MAX_RECONNECTION_RETRIES:
             try:
-                with self.sftp_connection.cd(target_dir):
+                with self.sftp_connection.cd(self.target_dir):
                     self.check_for_new_files()
                     self.copy_files()
             except (SSHException, OSError, AttributeError) as e:
