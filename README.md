@@ -3,7 +3,9 @@ This script is intended to first copy files from a local server. It then starts 
 Make sure hercules is also started on the destination.
 
 ## Config
-The setup can be configured via a json config file. For this just add a `config.json` file to the main directory with the following contents:
+The setup can be configured via a json config file. The path to the configfile can be given via command line arguments: `python3 main.py -c "config.json"`
+
+The config file shall have the following format and fields:
 ```
 {
     "target_ip": "", 

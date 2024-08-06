@@ -17,12 +17,12 @@ class Filemanager:
 
     def save_state(self, filename: str) -> None:
         with open(filename, "w") as f:
-            f.write(jsonpickle.encode(self.files))
+            f.write(jsonpickle.encode(self.files, indent=4))
 
     def cleanup_state(self, current_filenames: List[str]):
         files = []
         for file in self.files:
-            if file.name in current_filenames or not file.status == FileStatus.DELETED:
+            if file.name in current_filenames or file.status != FileStatus.DELETED:
                 files.append(file)
         self.files = files
 

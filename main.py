@@ -1,36 +1,28 @@
 import os
+import argparse
 from src.Manager import Manager
 from src.Config import Config
 
-TARGET_IP = ...
-USERNAME = ...
-SSH_KEY_FILE = ...
-TARGET_DIR = ...
-TEMP_DIR = "./temp/"
-HERCULES_PATH = ...
-HERCULES_INTERFACE = ...
-HERCULES_LOCAL_ADDRESS = ...
-HERCULES_DESTINATION_ADDRESS = ...
-
+CONFIG_FILE_PATH = "config.json"
 
 def main():
-    config = Config(
-        TARGET_IP,
-        USERNAME,
-        SSH_KEY_FILE,
-        TEMP_DIR,
-        HERCULES_PATH,
-        TARGET_DIR,
-        HERCULES_INTERFACE,
-        HERCULES_LOCAL_ADDRESS,
-        HERCULES_DESTINATION_ADDRESS,
-    )
-    if os.path.isfile("config.json"):
-        config.load("config.json")
-        print(config)
+    config = Config()
+    if os.path.isfile(CONFIG_FILE_PATH):
+        config.load(CONFIG_FILE_PATH)
+        print("Loading config file: % s" % os.path.abspath(CONFIG_FILE_PATH))
+    else:
+        print("Config not found.")
+        exit()
+    print(config)
     manager = Manager(config)
     manager.start()
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--Config", help = "Config File Path")
+    args = parser.parse_args()
+
+    if args.Config:
+        CONFIG_FILE_PATH = args.Config
     main()

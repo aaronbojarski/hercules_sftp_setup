@@ -4,15 +4,15 @@ from dataclasses import dataclass
 
 @dataclass
 class Config:
-    target_ip: str
-    username: str
-    ssh_key_file: str
-    temp_dir: str
-    target_dir: str
-    hercules_path: str
-    hercules_interface: str
-    hercules_local_address: str
-    hercules_destination_address: str
+    target_ip: str = ""
+    username: str = ""
+    ssh_key_file: str = ""
+    temp_dir: str = ""
+    target_dir: str = ""
+    hercules_path: str = ""
+    hercules_interface: str = ""
+    hercules_local_address: str = ""
+    hercules_destination_address: str = ""
 
     def load(self, filename: str):
         with open(filename, "r") as f:
