@@ -1,5 +1,4 @@
-import subprocess
-from time import sleep
+import requests
 from src.File import File
 from src.Config import Config
 
@@ -13,25 +12,12 @@ class Hercules:
 
     def transfer(self, file: File):
         print(f"HERCULES: SENDING file {file.name} ({file.local_path}) to {file.remote_path}")
-        subprocess.call(
-            [
-                self.binary,
-                "-i",
-                self.interface,
-                "-l",
-                self.local_address,
-                "-d",
-                self.destination_address,
-                "-t",
-                file.local_path,
-                "--mtu",
-                "1440",
-                "-p",
-                "1048576",
-                "-np",
-                "4",
-                "-nt",
-                "4",
-            ]
-        )
-        print("HERCULES: Transfer complete")
+        infile = file.local_path + "/" + file.name
+        outfile = file.remote_path + "/" + file.name
+        resp = requests.get(f"localhost:8000/submit?file={infile}&destfile={outfile}&dest={self.destination_address}:8000")
+        print("Hercules Response:", resp)
+        # TODO: Set the transfer ID in the file to later be able to check
+
+    def status(self, file: File):
+        # TODO: Do a request with the transfer ID to check the status of the file
+        pass

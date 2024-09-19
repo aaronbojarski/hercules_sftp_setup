@@ -6,8 +6,9 @@ class FileStatus(Enum):
     UPDATING = 1
     READY = 2
     COPIED = 3
-    SENT = 4
-    DELETED = 5
+    SENDING = 4
+    SENT = 5
+    DELETED = 6
 
 
 @dataclass
@@ -16,5 +17,4 @@ class File:
     size: int
     modified_time: int
     local_path: str
-    remote_path: str
     status: FileStatus = FileStatus.UPDATING

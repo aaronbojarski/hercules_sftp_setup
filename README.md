@@ -23,3 +23,6 @@ The config file shall have the following format and fields:
 ## Open issues
 - does hercules somehow send the filename to the destination?
 - does hercules handle small files? (Had issues with test files that are just a few bytes in size.)
+
+## TODO: 
+- write down the FILE state diagram

@@ -5,7 +5,7 @@ from typing import List
 
 
 class Filemanager:
-    def __init__(self, temp_dir: str) -> None:
+    def __init__(self, temp_dir: str, remote_dir: str) -> None:
         self.files: List[File] = []
         self.temp_dir = os.path.abspath(temp_dir)
 
@@ -27,7 +27,7 @@ class Filemanager:
         self.files = files
 
     def add(self, name: str, size: int, mtime: int):
-        file = File(name, size, mtime, self.temp_dir + "/" + name, "'Remote Path Placeholder'")
+        file = File(name, size, mtime, self.temp_dir + "/" + name)
         self.files.append(file)
 
     def update(self, name: str, size: int, mtime: int):

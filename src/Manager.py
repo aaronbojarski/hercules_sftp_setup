@@ -63,7 +63,13 @@ class Manager:
         for file in self.filemanager.files:
             if file.status == FileStatus.COPIED:
                 self.hercules.transfer(file)
-                file.status = FileStatus.SENT
+                file.status = FileStatus.SENDING
+
+    def check_sending_status(self):
+        for file in self.filemanager.files:
+            if file.status == FileStatus.SENDING:
+                if self.hercules.status(file) == FileStatus.SENT:
+                    file.status = FileStatus.SENT
 
     def cleanup(self):
         for file in self.filemanager.files:
