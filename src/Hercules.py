@@ -5,16 +5,15 @@ from src.Config import Config
 
 class Hercules:
     def __init__(self, config: Config):
-        self.binary = config.hercules_path
-        self.interface = config.hercules_interface
-        self.local_address = config.hercules_local_address
-        self.destination_address = config.hercules_destination_address
+        self.hercules_monitor_address = config.hercules_monitor_address
+        self.destination_address = config.rth_address
+        self.destination_dir = config.rth_target_dir
 
     def transfer(self, file: File):
-        print(f"HERCULES: SENDING file {file.name} ({file.local_path}) to {file.remote_path}")
-        infile = file.local_path + "/" + file.name
-        outfile = file.remote_path + "/" + file.name
-        resp = requests.get(f"localhost:8000/submit?file={infile}&destfile={outfile}&dest={self.destination_address}:8000")
+        print(f"HERCULES: SENDING file {file.name} ({file.local_path}) to {self.destination_dir}")
+        infile = file.local_path
+        outfile = self.destination_dir + "/" + file.name
+        resp = requests.get(f"{self.hercules_monitor_address}/submit?file={infile}&destfile={outfile}&dest={self.destination_address}")
         print("Hercules Response:", resp)
         # TODO: Set the transfer ID in the file to later be able to check
 

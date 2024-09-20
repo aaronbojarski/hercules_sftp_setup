@@ -17,20 +17,29 @@ This script can be configured via a json config file. The path to the configfile
 The config file shall have the following format and fields:
 ```
 {
-    "target_ip": "", 
-    "username": "",
-    "ssh_key_file": "",
-    "temp_dir": "",
-    "target_dir": "",
-    "hercules_path": "",
-    "hercules_interface": "",
-    "hercules_local_address": "",
-    "hercules_destination_address": ""
+    "ldh_ip": "", 
+    "ldh_username": "",
+    "ldh_ssh_key_file": "",
+    "ldh_target_dir": "",
+    "lth_temp_dir": "",
+    "hercules_monitor_address": "",
+    "rth_address": "",
+    "rth_target_dir": ""
 }
 ```
 
+- **ldh_ip**: _local data host_ IP address
+- **ldh_username**: _local data host_ username for SFTP login
+- **ldh_ssh_key_file**: _local data host_ ssh key file for SFTP login
+- **ldh_target_dir**: _local data host_ directory to observe
+- **lth_temp_dir**: _local transfer host_ directory to temporarily store files
+- **hercules_monitor_address**: address to interact with Hercules via HTTP api. (default=localhost:8000)
+- **rth_address**: _remote transfer host_ address. The destination address for hercules transferes. (SCION address)
+- **rth_target_dir**: _remote transfer host_ target directory. The destination directory for hercules transferes.
+
+
 ## File States: 
-This script stores file metadata as a `File` object. This includes a FileState. This state determines the current and next steps that must be performed on that file (copy, send, delete, ...).
+This script stores file metadata as a `File` object. This includes a `FileState`. This state determines the current and next steps that must be performed on that file (copy, send, delete, ...).
 
 The states and the state transitions are explained in the chart below.
 

@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-09-20T09:39:15.685Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" etag="iPN5mnXUOou3gWq1FxIU" version="23.1.7" type="device">
+<mxfile host="app.diagrams.net" modified="2024-09-20T09:54:40.187Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" etag="6o1AiZXPUQaMN5QY1JuF" version="23.1.7" type="device">
   <diagram name="Seite-1" id="1XncdXHAJjd4xyxPU_87">
     <mxGraphModel dx="1050" dy="530" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -30,7 +30,7 @@
         <mxCell id="DXtmEjoiwM5aXj4LoKhO-26" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="DXtmEjoiwM5aXj4LoKhO-14" target="DXtmEjoiwM5aXj4LoKhO-18">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="DXtmEjoiwM5aXj4LoKhO-30" value="Start Hercules file transfer." style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="DXtmEjoiwM5aXj4LoKhO-26">
+        <mxCell id="DXtmEjoiwM5aXj4LoKhO-30" value="Hercules file transfer started." style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="DXtmEjoiwM5aXj4LoKhO-26">
           <mxGeometry x="-0.144" y="-1" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
@@ -47,7 +47,7 @@
             <mxPoint x="490" y="300" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="DXtmEjoiwM5aXj4LoKhO-17" value="The file is copied with SFTP." style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="DXtmEjoiwM5aXj4LoKhO-16">
+        <mxCell id="DXtmEjoiwM5aXj4LoKhO-17" value="File copied with SFTP." style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="DXtmEjoiwM5aXj4LoKhO-16">
           <mxGeometry x="0.056" y="-3" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
@@ -69,23 +69,88 @@
         <mxCell id="DXtmEjoiwM5aXj4LoKhO-20" value="SENT" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="160" y="560" width="240" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="DXtmEjoiwM5aXj4LoKhO-21" value="The file hercules transfer of the file has &lt;br&gt;completed successfully." style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="DXtmEjoiwM5aXj4LoKhO-20">
-          <mxGeometry x="10" y="25" width="230" height="40" as="geometry" />
+        <mxCell id="DXtmEjoiwM5aXj4LoKhO-21" value="The hercules transfer of the file has &lt;br&gt;completed successfully." style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="DXtmEjoiwM5aXj4LoKhO-20">
+          <mxGeometry x="10" y="25" width="210" height="40" as="geometry" />
         </mxCell>
         <mxCell id="DXtmEjoiwM5aXj4LoKhO-22" value="DELETED" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="160" y="680" width="240" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="DXtmEjoiwM5aXj4LoKhO-23" value="The file is deleted from the temporary &lt;br&gt;storage on the transfer host." style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="DXtmEjoiwM5aXj4LoKhO-22">
-          <mxGeometry x="10" y="25" width="220" height="40" as="geometry" />
+        <mxCell id="DXtmEjoiwM5aXj4LoKhO-23" value="The file has been deleted from the&lt;br&gt;temporary storage on the transfer host." style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="DXtmEjoiwM5aXj4LoKhO-22">
+          <mxGeometry x="10" y="25" width="230" height="40" as="geometry" />
         </mxCell>
         <mxCell id="DXtmEjoiwM5aXj4LoKhO-29" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="DXtmEjoiwM5aXj4LoKhO-22">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="280" y="630" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="DXtmEjoiwM5aXj4LoKhO-32" value="File is deleted." style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="DXtmEjoiwM5aXj4LoKhO-29">
+        <mxCell id="DXtmEjoiwM5aXj4LoKhO-32" value="File deleted." style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="DXtmEjoiwM5aXj4LoKhO-29">
           <mxGeometry x="-0.1122" y="1" relative="1" as="geometry">
             <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DXtmEjoiwM5aXj4LoKhO-33" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="DXtmEjoiwM5aXj4LoKhO-22">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="550" as="sourcePoint" />
+            <mxPoint x="280" y="800" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DXtmEjoiwM5aXj4LoKhO-39" value="File is DELETED and has been removed from &lt;br&gt;the observed directory." style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="DXtmEjoiwM5aXj4LoKhO-33">
+          <mxGeometry x="-0.128" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DXtmEjoiwM5aXj4LoKhO-38" value="The &quot;File&quot; object is removed" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=default;" vertex="1" parent="1">
+          <mxGeometry x="180" y="800" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="DXtmEjoiwM5aXj4LoKhO-40" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="DXtmEjoiwM5aXj4LoKhO-10">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="440" y="270" as="sourcePoint" />
+            <mxPoint x="400" y="90" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="440" y="235" />
+              <mxPoint x="440" y="90" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DXtmEjoiwM5aXj4LoKhO-45" value="File was modified." style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="DXtmEjoiwM5aXj4LoKhO-40">
+          <mxGeometry x="0.4311" relative="1" as="geometry">
+            <mxPoint x="10" y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DXtmEjoiwM5aXj4LoKhO-41" value="" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="DXtmEjoiwM5aXj4LoKhO-14">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="440" y="350" as="sourcePoint" />
+            <mxPoint x="440" y="230" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="440" y="355" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DXtmEjoiwM5aXj4LoKhO-42" value="" style="endArrow=none;html=1;rounded=0;exitX=0.998;exitY=0.16;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="DXtmEjoiwM5aXj4LoKhO-19">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="440" y="510" as="sourcePoint" />
+            <mxPoint x="440" y="340" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="440" y="475" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DXtmEjoiwM5aXj4LoKhO-43" value="" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="DXtmEjoiwM5aXj4LoKhO-20">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="440" y="510" as="sourcePoint" />
+            <mxPoint x="440" y="470" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="440" y="595" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DXtmEjoiwM5aXj4LoKhO-44" value="" style="endArrow=none;html=1;rounded=0;exitX=0.998;exitY=0.225;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="DXtmEjoiwM5aXj4LoKhO-23">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="440" y="680" as="sourcePoint" />
+            <mxPoint x="440" y="580" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="440" y="714" />
+            </Array>
           </mxGeometry>
         </mxCell>
       </root>

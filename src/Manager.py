@@ -14,20 +14,20 @@ MAX_RECONNECTION_RETRIES = 5
 class Manager:
     def __init__(self, config: Config) -> None:
         self.connection_retries = 0
-        self.state_file = config.temp_dir + "/state.json"
-        self.target_ip = config.target_ip
-        self.username = config.username
-        self.ssh_key_file = config.ssh_key_file
-        self.target_dir = config.target_dir
-        self.sftp_connection = pysftp.Connection(self.target_ip, username=self.username, private_key=self.ssh_key_file)
-        self.filemanager = Filemanager(config.temp_dir)
+        self.state_file = config.lth_temp_dir + "/state.json"
+        self.ldh_ip = config.ldh_ip
+        self.ldh_username = config.ldh_username
+        self.ldh_ssh_key_file = config.ldh_ssh_key_file
+        self.ldh_target_dir = config.ldh_target_dir
+        self.sftp_connection = pysftp.Connection(self.ldh_ip, username=self.ldh_username, private_key=self.ldh_ssh_key_file)
+        self.filemanager = Filemanager(config.lth_temp_dir)
         self.filemanager.load_state(self.state_file)
         self.hercules = Hercules(config)
 
     def start(self):
         while self.connection_retries < MAX_RECONNECTION_RETRIES:
             try:
-                with self.sftp_connection.cd(self.target_dir):
+                with self.sftp_connection.cd(self.ldh_target_dir):
                     self.check_for_new_files()
                     self.copy_files()
             except (SSHException, OSError, AttributeError) as e:
@@ -36,7 +36,7 @@ class Manager:
                 print(f"Trying to reconnect. Retry {self.connection_retries}/{MAX_RECONNECTION_RETRIES}")
                 try:
                     self.sftp_connection = pysftp.Connection(
-                        self.target_ip, username=self.username, private_key=self.ssh_key_file
+                        self.ldh_ip, username=self.ldh_username, private_key=self.ldh_ssh_key_file
                     )
                 except Exception as e:
                     print(e)
