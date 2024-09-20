@@ -19,7 +19,9 @@ class Manager:
         self.ldh_username = config.ldh_username
         self.ldh_ssh_key_file = config.ldh_ssh_key_file
         self.ldh_target_dir = config.ldh_target_dir
-        self.sftp_connection = pysftp.Connection(self.ldh_ip, username=self.ldh_username, private_key=self.ldh_ssh_key_file)
+        self.sftp_connection = pysftp.Connection(
+            self.ldh_ip, username=self.ldh_username, private_key=self.ldh_ssh_key_file
+        )
         self.filemanager = Filemanager(config.lth_temp_dir)
         self.filemanager.load_state(self.state_file)
         self.hercules = Hercules(config)

@@ -13,7 +13,9 @@ class Hercules:
         print(f"HERCULES: SENDING file {file.name} ({file.local_path}) to {self.destination_dir}")
         infile = file.local_path
         outfile = self.destination_dir + "/" + file.name
-        resp = requests.get(f"{self.hercules_monitor_address}/submit?file={infile}&destfile={outfile}&dest={self.destination_address}")
+        resp = requests.get(
+            f"{self.hercules_monitor_address}/submit?file={infile}&destfile={outfile}&dest={self.destination_address}"
+        )
         print("Hercules Response:", resp)
         # TODO: Set the transfer ID in the file to later be able to check
 
