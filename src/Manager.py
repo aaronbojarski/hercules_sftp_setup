@@ -14,11 +14,11 @@ MAX_RECONNECTION_RETRIES = 5
 class Manager:
     def __init__(self, config: Config) -> None:
         self.connection_retries = 0
-        self.outgoing_state_file = config.lth_out_temp_dir + "/outgoing_state.json"
-        self.incoming_state_file = config.lth_out_temp_dir + "/incoming_state.json"
         self.sftp_connection = pysftp.Connection(
             config.ldh_ip, username=config.ldh_username, private_key=config.ldh_ssh_key_file
         )
+        self.outgoing_state_file = config.lth_out_temp_dir + "/outgoing_state.json"
+        self.incoming_state_file = config.lth_out_temp_dir + "/incoming_state.json"
         self.outgoing_filemanager = Filemanager(config.lth_out_temp_dir)
         self.outgoing_filemanager.load_state(self.outgoing_state_file)
         self.incoming_filemanager = Filemanager(config.lth_hercules_rcv_dir)
@@ -48,8 +48,10 @@ class Manager:
 
             self.send_outgoing_files()
             self.check_sending_status()
-            self.cleanup(self.outgoing_filemanager, self.outgoing_state_file)
-            self.cleanup(self.incoming_filemanager, self.incoming_state_file)
+            self.remove_temp_files(self.outgoing_filemanager)
+            self.remove_temp_files(self.incoming_filemanager)
+            self.outgoing_filemanager.save_state(self.outgoing_state_file)
+            self.incoming_filemanager.save_state(self.incoming_state_file)
             sleep(3)
 
     def check_outgoing_files(self):
@@ -92,10 +94,9 @@ class Manager:
                 if self.hercules.status(file) == FileStatus.SENT:
                     file.status = FileStatus.SENT
 
-    def cleanup(self, filemanager: Filemanager, state_filename):
+    def remove_temp_files(self, filemanager: Filemanager):
         for file in filemanager.files:
             if file.status == FileStatus.SENT and os.path.isfile(file.local_path):
                 print(f"Removing temp file: {file.local_path}")
                 os.remove(file.local_path)
                 file.status = FileStatus.DELETED
-        filemanager.save_state(state_filename)
