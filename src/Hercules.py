@@ -17,7 +17,7 @@ class Hercules:
             f"http://{self.hercules_monitor_address}/submit?file={infile}&destfile={outfile}&dest={self.destination_address}"
         ).text
         print("Hercules Response:", resp)
-        file.hercules_file_id = (int)(resp[3:])
+        file.hercules_file_id = [int(s) for s in resp.split() if s.isdigit()][0]
 
     def status(self, file: File):
         if file.hercules_file_id == -1:
