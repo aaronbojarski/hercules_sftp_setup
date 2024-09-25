@@ -41,6 +41,7 @@ class Manager:
                     print(e)
 
             self.send_files()
+            self.check_sending_status()
             self.cleanup()
             sleep(5)
 
