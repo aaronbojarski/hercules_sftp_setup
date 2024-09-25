@@ -20,8 +20,10 @@ The config file shall have the following format and fields:
     "ldh_ip": "", 
     "ldh_username": "",
     "ldh_ssh_key_file": "",
-    "ldh_target_dir": "",
-    "lth_temp_dir": "",
+    "ldh_observe_dir": "",
+    "ldh_write_dir": "",
+    "lth_hercules_rcv_dir": "",
+    "lth_out_temp_dir": "",
     "hercules_monitor_address": "",
     "rth_address": "",
     "rth_target_dir": ""
@@ -31,8 +33,10 @@ The config file shall have the following format and fields:
 - **ldh_ip**: _local data host_ IP address
 - **ldh_username**: _local data host_ username for SFTP login
 - **ldh_ssh_key_file**: _local data host_ ssh key file for SFTP login
-- **ldh_target_dir**: _local data host_ directory to observe
-- **lth_temp_dir**: _local transfer host_ directory to temporarily store files
+- **ldh_observe_dir**: _local data host_ directory to observe for outgoing files
+- **ldh_write_dir**: _local data host_ directory to write incoming files to
+- **lth_hercules_rcv_dir**: _local transfer host_ directory to observe for incoming hercules transfers
+- **lth_out_temp_dir**: _local transfer host_ directory to temporarily store files for outgoing hercules transfers
 - **hercules_monitor_address**: address to interact with Hercules via HTTP api. (default=localhost:8000)
 - **rth_address**: _remote transfer host_ address. The destination address for hercules transferes. (SCION address)
 - **rth_target_dir**: _remote transfer host_ target directory. The destination directory for hercules transferes.

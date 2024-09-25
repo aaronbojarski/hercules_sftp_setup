@@ -14,21 +14,27 @@ MAX_RECONNECTION_RETRIES = 5
 class Manager:
     def __init__(self, config: Config) -> None:
         self.connection_retries = 0
-        self.state_file = config.lth_temp_dir + "/state.json"
+        self.outgoing_state_file = config.lth_out_temp_dir + "/outgoing_state.json"
+        self.incoming_state_file = config.lth_out_temp_dir + "/incoming_state.json"
         self.sftp_connection = pysftp.Connection(
             config.ldh_ip, username=config.ldh_username, private_key=config.ldh_ssh_key_file
         )
-        self.filemanager = Filemanager(config.lth_temp_dir)
-        self.filemanager.load_state(self.state_file)
+        self.outgoing_filemanager = Filemanager(config.lth_out_temp_dir)
+        self.outgoing_filemanager.load_state(self.outgoing_state_file)
+        self.incoming_filemanager = Filemanager(config.lth_hercules_rcv_dir)
+        self.incoming_filemanager.load_state(self.incoming_state_file)
         self.hercules = Hercules(config)
         self.config = config
 
     def start(self):
         while self.connection_retries < MAX_RECONNECTION_RETRIES:
             try:
-                with self.sftp_connection.cd(self.config.ldh_target_dir):
-                    self.check_for_new_files()
-                    self.copy_files()
+                with self.sftp_connection.cd(self.config.ldh_observe_dir):
+                    self.check_outgoing_files()
+                    self.copy_outgoing_files()
+                with self.sftp_connection.cd(self.config.ldh_write_dir):
+                    self.check_incoming_files()
+                    self.copy_incoming_files()
             except (SSHException, OSError, AttributeError) as e:
                 print(e)
                 self.connection_retries += 1
@@ -40,41 +46,56 @@ class Manager:
                 except Exception as e:
                     print(e)
 
-            self.send_files()
+            self.send_outgoing_files()
             self.check_sending_status()
-            self.cleanup()
-            sleep(5)
+            self.cleanup(self.outgoing_filemanager, self.outgoing_state_file)
+            self.cleanup(self.incoming_filemanager, self.incoming_state_file)
+            sleep(3)
 
-    def check_for_new_files(self):
+    def check_outgoing_files(self):
         current_files = self.sftp_connection.listdir()
         for f in current_files:
             metadata = self.sftp_connection.stat(f)
-            self.filemanager.update(f, metadata.st_size, metadata.st_mtime)
-        self.filemanager.cleanup_state(current_files)
+            self.outgoing_filemanager.update(f, metadata.st_size, metadata.st_mtime)
+        self.outgoing_filemanager.cleanup_state(current_files)
 
-    def copy_files(self):
-        for file in self.filemanager.files:
+    def copy_outgoing_files(self):
+        for file in self.outgoing_filemanager.files:
             if file.status == FileStatus.READY:
                 with alive_bar(file.size, manual=True) as bar:
                     self.sftp_connection.get(file.name, file.local_path, callback=(lambda a, b: bar(a / b)))
                 file.status = FileStatus.COPIED
 
-    def send_files(self):
-        for file in self.filemanager.files:
+    def check_incoming_files(self):
+        current_files = os.listdir(self.config.lth_hercules_rcv_dir)
+        for f in current_files:
+            metadata = os.stat(f)
+            self.incoming_filemanager.update(f, metadata.st_size, metadata.st_mtime)
+        self.incoming_filemanager.cleanup_state(current_files)
+
+    def copy_incoming_files(self):
+        for file in self.incoming_filemanager.files:
+            if file.status == FileStatus.READY:
+                with alive_bar(file.size, manual=True) as bar:
+                    self.sftp_connection.put(file.local_path, file.name, callback=(lambda a, b: bar(a / b)))
+                file.status = FileStatus.COPIED
+
+    def send_outgoing_files(self):
+        for file in self.outgoing_filemanager.files:
             if file.status == FileStatus.COPIED:
                 self.hercules.transfer(file)
                 file.status = FileStatus.SENDING
 
     def check_sending_status(self):
-        for file in self.filemanager.files:
+        for file in self.outgoing_filemanager.files:
             if file.status == FileStatus.SENDING:
                 if self.hercules.status(file) == FileStatus.SENT:
                     file.status = FileStatus.SENT
 
-    def cleanup(self):
-        for file in self.filemanager.files:
+    def cleanup(self, filemanager: Filemanager, state_filename):
+        for file in filemanager.files:
             if file.status == FileStatus.SENT and os.path.isfile(file.local_path):
                 print(f"Removing temp file: {file.local_path}")
                 os.remove(file.local_path)
                 file.status = FileStatus.DELETED
-        self.filemanager.save_state(self.state_file)
+        filemanager.save_state(state_filename)
