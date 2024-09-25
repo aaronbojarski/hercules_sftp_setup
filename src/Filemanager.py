@@ -14,7 +14,7 @@ class Filemanager:
             return
         with open(filename, "r") as f:
             self.files = jsonpickle.decode(f.read())
-        # restart hercules transfer if file was in transfer
+        # restart hercules transfer if file was in transfer in loaded state
         for file in self.files:
             if file.status == FileStatus.SENDING:
                 file.status = FileStatus.COPIED

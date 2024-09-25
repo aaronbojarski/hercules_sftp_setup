@@ -50,7 +50,7 @@ class Manager:
             self.check_sending_status()
             self.remove_incoming_temp_files()
             self.remove_outgoing_temp_files()
-            sleep(3)
+            sleep(5)
 
     def check_outgoing_files(self):
         current_files = self.sftp_connection.listdir()
@@ -89,8 +89,11 @@ class Manager:
     def check_sending_status(self):
         for file in self.outgoing_filemanager.files:
             if file.status == FileStatus.SENDING:
-                if self.hercules.status(file) == FileStatus.SENT:
-                    file.status = FileStatus.SENT
+                transfer_status = self.hercules.status(file)
+                if transfer_status == FileStatus.ERROR:
+                    file.status = FileStatus.UPDATING
+                else:
+                    file.status = transfer_status
 
     def remove_temp_files(self, filemanager: Filemanager):
         for file in filemanager.files:

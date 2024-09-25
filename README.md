@@ -22,8 +22,8 @@ The config file shall have the following format and fields:
     "ldh_ssh_key_file": "",
     "ldh_observe_dir": "",
     "ldh_write_dir": "",
-    "lth_hercules_rcv_dir": "",
-    "lth_out_temp_dir": "",
+    "lth_hercules_rcv_dir": "./temp/incoming",
+    "lth_out_temp_dir": "./temp/outgoing",
     "hercules_monitor_address": "",
     "rth_address": "",
     "rth_target_dir": ""
