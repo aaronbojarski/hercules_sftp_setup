@@ -14,7 +14,7 @@ class Hercules:
         infile = file.local_path
         outfile = self.destination_dir + "/" + file.name
         resp = requests.get(
-            f"{self.hercules_monitor_address}/submit?file={infile}&destfile={outfile}&dest={self.destination_address}"
+            f"http://{self.hercules_monitor_address}/submit?file={infile}&destfile={outfile}&dest={self.destination_address}"
         ).text
         print("Hercules Response:", resp)
         file.hercules_file_id = (int)(resp[3:])
@@ -23,7 +23,7 @@ class Hercules:
         if file.hercules_file_id == -1:
             FileStatus.ERROR
         resp = requests.get(
-            f"{self.hercules_monitor_address}/status?id={file.hercules_file_id}"
+            f"http://{self.hercules_monitor_address}/status?id={file.hercules_file_id}"
         ).text
         print("Hercules Status Response:", resp)
         status = [int(s) for s in resp.split() if s.isdigit()][0]
