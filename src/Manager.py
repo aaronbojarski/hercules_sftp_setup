@@ -18,7 +18,7 @@ class Manager:
             config.ldh_ip, username=config.ldh_username, private_key=config.ldh_ssh_key_file
         )
         self.outgoing_state_file = config.lth_out_temp_dir + "/outgoing_state.json"
-        self.incoming_state_file = config.lth_out_temp_dir + "/incoming_state.json"
+        self.incoming_state_file = config.lth_hercules_rcv_dir + "/incoming_state.json"
         self.outgoing_filemanager = Filemanager(config.lth_out_temp_dir)
         self.outgoing_filemanager.load_state(self.outgoing_state_file)
         self.incoming_filemanager = Filemanager(config.lth_hercules_rcv_dir)
@@ -48,10 +48,8 @@ class Manager:
 
             self.send_outgoing_files()
             self.check_sending_status()
-            self.remove_temp_files(self.outgoing_filemanager)
-            self.remove_temp_files(self.incoming_filemanager)
-            self.outgoing_filemanager.save_state(self.outgoing_state_file)
-            self.incoming_filemanager.save_state(self.incoming_state_file)
+            self.remove_incoming_temp_files()
+            self.remove_outgoing_temp_files()
             sleep(3)
 
     def check_outgoing_files(self):
@@ -71,7 +69,7 @@ class Manager:
     def check_incoming_files(self):
         current_files = os.listdir(self.config.lth_hercules_rcv_dir)
         for f in current_files:
-            metadata = os.stat(f)
+            metadata = os.stat(self.config.lth_hercules_rcv_dir + "/" + f)
             self.incoming_filemanager.update(f, metadata.st_size, metadata.st_mtime)
         self.incoming_filemanager.cleanup_state(current_files)
 
@@ -100,3 +98,19 @@ class Manager:
                 print(f"Removing temp file: {file.local_path}")
                 os.remove(file.local_path)
                 file.status = FileStatus.DELETED
+
+    def remove_outgoing_temp_files(self):
+        for file in self.outgoing_filemanager.files:
+            if file.status == FileStatus.SENT and os.path.isfile(file.local_path):
+                print(f"Removing temp file: {file.local_path}")
+                os.remove(file.local_path)
+                file.status = FileStatus.DELETED
+        self.incoming_filemanager.save_state(self.incoming_state_file)
+
+    def remove_incoming_temp_files(self):
+        for file in self.incoming_filemanager.files:
+            if file.status == FileStatus.COPIED and os.path.isfile(file.local_path):
+                print(f"Removing temp file: {file.local_path}")
+                os.remove(file.local_path)
+                file.status = FileStatus.DELETED
+        self.outgoing_filemanager.save_state(self.outgoing_state_file)
