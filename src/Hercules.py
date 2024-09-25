@@ -27,6 +27,8 @@ class Hercules:
         ).text
         print("Hercules Status Response:", resp)
         status = [int(s) for s in resp.split() if s.isdigit()][0]
+        print(f"Current status: {status}")
         if status == 3:
+            print(f"Hercules transfer for {file.name} done.")
             return FileStatus.SENT
         return FileStatus.SENDING
