@@ -51,5 +51,4 @@ The states and the state transitions are explained in the chart below.
 
 
 ## Open Issues
-- does hercules somehow send the filename to the destination? YES the new hercules server does do this.
 - does hercules handle small files? (Had issues with test files that are just a few bytes in size.)
