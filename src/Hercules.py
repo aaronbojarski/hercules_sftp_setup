@@ -18,6 +18,7 @@ class Hercules:
         ).text
         print("Hercules Response:", resp)
         file.hercules_file_id = [int(s) for s in resp.split() if s.isdigit()][0]
+        print("hercules file id: ", file.hercules_file_id)
 
     def status(self, file: File):
         if file.hercules_file_id == -1:
