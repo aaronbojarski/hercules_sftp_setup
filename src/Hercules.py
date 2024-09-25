@@ -1,5 +1,5 @@
 import requests
-from src.File import File
+from src.File import File, FileStatus
 from src.Config import Config
 
 
@@ -15,10 +15,18 @@ class Hercules:
         outfile = self.destination_dir + "/" + file.name
         resp = requests.get(
             f"{self.hercules_monitor_address}/submit?file={infile}&destfile={outfile}&dest={self.destination_address}"
-        )
+        ).text
         print("Hercules Response:", resp)
-        # TODO: Set the transfer ID in the file to later be able to check
+        file.hercules_file_id = (int)(resp[3:])
 
     def status(self, file: File):
-        # TODO: Do a request with the transfer ID to check the status of the file
-        pass
+        if file.hercules_file_id == -1:
+            FileStatus.ERROR
+        resp = requests.get(
+            f"{self.hercules_monitor_address}/status?id={file.hercules_file_id}"
+        ).text
+        print("Hercules Status Response:", resp)
+        status = [int(s) for s in resp.split() if s.isdigit()][0]
+        if status == 3:
+            return FileStatus.SENT
+        return FileStatus.SENDING

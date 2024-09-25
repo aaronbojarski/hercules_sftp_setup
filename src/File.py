@@ -9,6 +9,7 @@ class FileStatus(Enum):
     SENDING = 4
     SENT = 5
     DELETED = 6
+    ERROR = 7
 
 
 @dataclass
@@ -18,3 +19,4 @@ class File:
     modified_time: int
     local_path: str
     status: FileStatus = FileStatus.UPDATING
+    hercules_file_id: int = -1
