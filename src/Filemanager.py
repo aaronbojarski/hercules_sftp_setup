@@ -5,7 +5,7 @@ from typing import List
 
 
 class Filemanager:
-    def __init__(self, temp_dir: str, remote_dir: str) -> None:
+    def __init__(self, temp_dir: str) -> None:
         self.files: List[File] = []
         self.temp_dir = os.path.abspath(temp_dir)
 
