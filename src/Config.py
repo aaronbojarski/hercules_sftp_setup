@@ -9,6 +9,7 @@ class Config:
     ldh_ssh_key_file: str = ""
     ldh_observe_dir: str = ""
     ldh_write_dir: str = ""
+    lth_state_file_dir: str = ""
     lth_hercules_rcv_dir: str = ""
     lth_out_temp_dir: str = ""
     hercules_monitor_address: str = "localhost:8000"
@@ -29,6 +30,8 @@ class Config:
                 self.ldh_observe_dir = value
             if key == "ldh_write_dir":
                 self.ldh_write_dir = value
+            if key == "lth_state_file_dir":
+                self.lth_state_file_dir = value
             if key == "lth_hercules_rcv_dir":
                 self.lth_hercules_rcv_dir = value
             if key == "lth_out_temp_dir":

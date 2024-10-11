@@ -22,6 +22,7 @@ The config file shall have the following format and fields:
     "ldh_ssh_key_file": "",
     "ldh_observe_dir": "",
     "ldh_write_dir": "",
+    "lth_state_file_dir": "",
     "lth_hercules_rcv_dir": "./temp/incoming",
     "lth_out_temp_dir": "./temp/outgoing",
     "hercules_monitor_address": "",
@@ -35,6 +36,7 @@ The config file shall have the following format and fields:
 - **ldh_ssh_key_file**: _local data host_ ssh key file for SFTP login
 - **ldh_observe_dir**: _local data host_ directory to observe for outgoing files
 - **ldh_write_dir**: _local data host_ directory to write incoming files to
+- **lth_state_file_dir**: _local transfer host_ directory where `incoming_state.json` and `outgoing_state.json` will be stored and loaded from.
 - **lth_hercules_rcv_dir**: _local transfer host_ directory to observe for incoming hercules transfers
 - **lth_out_temp_dir**: _local transfer host_ directory to temporarily store files for outgoing hercules transfers
 - **hercules_monitor_address**: address to interact with Hercules via HTTP api. (default=localhost:8000)

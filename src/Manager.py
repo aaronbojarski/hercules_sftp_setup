@@ -17,8 +17,8 @@ class Manager:
         self.sftp_connection = pysftp.Connection(
             config.ldh_ip, username=config.ldh_username, private_key=config.ldh_ssh_key_file
         )
-        self.outgoing_state_file = config.lth_out_temp_dir + "/outgoing_state.json"
-        self.incoming_state_file = config.lth_hercules_rcv_dir + "/incoming_state.json"
+        self.outgoing_state_file = config.lth_state_file_dir + "/outgoing_state.json"
+        self.incoming_state_file = config.lth_state_file_dir + "/incoming_state.json"
         self.outgoing_filemanager = Filemanager(config.lth_out_temp_dir)
         self.outgoing_filemanager.load_state(self.outgoing_state_file)
         self.incoming_filemanager = Filemanager(config.lth_hercules_rcv_dir)
@@ -94,13 +94,6 @@ class Manager:
                     file.status = FileStatus.UPDATING
                 else:
                     file.status = transfer_status
-
-    def remove_temp_files(self, filemanager: Filemanager):
-        for file in filemanager.files:
-            if file.status == FileStatus.SENT and os.path.isfile(file.local_path):
-                print(f"Removing temp file: {file.local_path}")
-                os.remove(file.local_path)
-                file.status = FileStatus.DELETED
 
     def remove_outgoing_temp_files(self):
         for file in self.outgoing_filemanager.files:
