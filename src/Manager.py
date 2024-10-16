@@ -42,7 +42,6 @@ class Manager:
                 self.connection_retries += 1
                 print(f"Trying to reconnect. Retry {self.connection_retries}/{MAX_RECONNECTION_RETRIES}")
                 try:
-                    self.ssh = paramiko.SSHClient()
                     self.ssh.connect(self.config.ldh_ip, username=self.config.ldh_username, pkey=self.key)
                     self.sftp_connection = self.ssh.open_sftp()
                 except Exception as e:
