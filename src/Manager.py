@@ -31,12 +31,12 @@ class Manager:
     def start(self):
         while self.connection_retries < MAX_RECONNECTION_RETRIES:
             try:
-                with self.sftp_connection.chdir(self.config.ldh_observe_dir):
-                    self.check_outgoing_files()
-                    self.copy_outgoing_files()
-                with self.sftp_connection.chdir(self.config.ldh_write_dir):
-                    self.check_incoming_files()
-                    self.copy_incoming_files()
+                self.sftp_connection.chdir(self.config.ldh_observe_dir)
+                self.check_outgoing_files()
+                self.copy_outgoing_files()
+                self.sftp_connection.chdir(self.config.ldh_write_dir)
+                self.check_incoming_files()
+                self.copy_incoming_files()
             except (SSHException, OSError, AttributeError) as e:
                 print(e)
                 self.connection_retries += 1
