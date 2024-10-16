@@ -2,7 +2,7 @@ from src.Hercules import Hercules
 from src.Filemanager import Filemanager
 from src.File import FileStatus
 from src.Config import Config
-import pysftp
+import paramiko
 from paramiko.ssh_exception import SSHException
 import os
 from time import sleep
@@ -14,9 +14,10 @@ MAX_RECONNECTION_RETRIES = 5
 class Manager:
     def __init__(self, config: Config) -> None:
         self.connection_retries = 0
-        self.sftp_connection = pysftp.Connection(
-            config.ldh_ip, username=config.ldh_username, private_key=config.ldh_ssh_key_file
-        )
+        self.ssh = paramiko.SSHClient()
+        self.key = paramiko.RSAKey.from_private_key_file(config.ldh_ssh_key_file)
+        self.ssh.connect(config.ldh_ip, username=config.ldh_username, pkey=self.key)
+        self.sftp_connection = self.ssh.open_sftp()
         self.outgoing_state_file = config.lth_state_file_dir + "/outgoing_state.json"
         self.incoming_state_file = config.lth_state_file_dir + "/incoming_state.json"
         self.outgoing_filemanager = Filemanager(config.lth_out_temp_dir)
@@ -29,10 +30,10 @@ class Manager:
     def start(self):
         while self.connection_retries < MAX_RECONNECTION_RETRIES:
             try:
-                with self.sftp_connection.cd(self.config.ldh_observe_dir):
+                with self.sftp_connection.chdir(self.config.ldh_observe_dir):
                     self.check_outgoing_files()
                     self.copy_outgoing_files()
-                with self.sftp_connection.cd(self.config.ldh_write_dir):
+                with self.sftp_connection.chdir(self.config.ldh_write_dir):
                     self.check_incoming_files()
                     self.copy_incoming_files()
             except (SSHException, OSError, AttributeError) as e:
@@ -40,9 +41,9 @@ class Manager:
                 self.connection_retries += 1
                 print(f"Trying to reconnect. Retry {self.connection_retries}/{MAX_RECONNECTION_RETRIES}")
                 try:
-                    self.sftp_connection = pysftp.Connection(
-                        self.config.ldh_ip, username=self.config.ldh_username, private_key=self.config.ldh_ssh_key_file
-                    )
+                    self.ssh = paramiko.SSHClient()
+                    self.ssh.connect(self.config.ldh_ip, username=self.config.ldh_username, pkey=self.key)
+                    self.sftp_connection = self.ssh.open_sftp()
                 except Exception as e:
                     print(e)
 
