@@ -15,6 +15,7 @@ class Manager:
     def __init__(self, config: Config) -> None:
         self.connection_retries = 0
         self.ssh = paramiko.SSHClient()
+        self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.key = paramiko.RSAKey.from_private_key_file(config.ldh_ssh_key_file)
         self.ssh.connect(config.ldh_ip, username=config.ldh_username, pkey=self.key)
         self.sftp_connection = self.ssh.open_sftp()
