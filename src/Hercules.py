@@ -1,5 +1,5 @@
 import requests
-from src.File import File, FileStatus
+from src.File import File, ItemStatus
 from src.Config import Config
 
 
@@ -22,10 +22,10 @@ class Hercules:
 
     def status(self, file: File):
         if file.hercules_file_id == -1:
-            FileStatus.ERROR
+            ItemStatus.ERROR
         resp = requests.get(f"http://{self.hercules_monitor_address}/status?id={file.hercules_file_id}").text
         status = [int(s) for s in resp.split() if s.isdigit()][0]
         if status == 3:
             print(f"Hercules transfer for {file.name} done.")
-            return FileStatus.SENT
-        return FileStatus.SENDING
+            return ItemStatus.SENT
+        return ItemStatus.SENDING

@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from enum import Enum
+from typing import List
 
-
-class FileStatus(Enum):
+class ItemStatus(Enum):
     UPDATING = 1
     READY = 2
     COPIED = 3
@@ -18,5 +18,15 @@ class File:
     size: int
     modified_time: int
     local_path: str
-    status: FileStatus = FileStatus.UPDATING
+    status: ItemStatus = ItemStatus.UPDATING
     hercules_file_id: int = -1
+
+@dataclass
+class Directory:
+    name: str
+    size: int
+    modified_time: int
+    local_path: str
+    status: ItemStatus = ItemStatus.UPDATING
+    hercules_id: int = -1
+    
