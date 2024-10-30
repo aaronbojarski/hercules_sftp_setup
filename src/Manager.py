@@ -75,7 +75,9 @@ class Manager:
         for item in dir_content:
             metadata = self.sftp_connection.stat(f"{base_name}/{item}")
             if stat.S_ISDIR(metadata.st_mode):
-                mod_time, total_size = self.traverse_outgoing_dir(f"{base_name}/{item}")
+                m_t, t_s = self.traverse_outgoing_dir(f"{base_name}/{item}")
+                mod_time = max(mod_time, m_t)
+                total_size += t_s
             elif stat.S_ISREG(metadata.st_mode):
                 mod_time = max(mod_time, metadata.st_mtime)
                 total_size += metadata.st_size
