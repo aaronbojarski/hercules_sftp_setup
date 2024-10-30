@@ -36,6 +36,7 @@ class Manager:
                 self.sftp_connection.chdir(self.config.ldh_observe_dir)
                 self.check_outgoing_files()
                 self.copy_outgoing_files()
+                self.copy_outgoing_directories()
                 self.sftp_connection.chdir(self.config.ldh_write_dir)
                 self.check_incoming_files()
                 self.copy_incoming_files()
@@ -60,7 +61,7 @@ class Manager:
         for item in dir_content:
             metadata = self.sftp_connection.stat(item)
             if stat.S_ISDIR(metadata.st_mode):
-                mod_time, total_size = self.traverse_outgoing_dir("./", item)
+                mod_time, total_size = self.traverse_outgoing_dir(f"./{item}")
                 self.outgoing_filemanager.update_dir(item, total_size, mod_time)
             elif stat.S_ISREG(metadata.st_mode):
                 self.outgoing_filemanager.update(item, metadata.st_size, metadata.st_mtime)
@@ -68,13 +69,13 @@ class Manager:
                 print(f"No file or directory. Ignoring '{item}'")
         self.outgoing_filemanager.cleanup_state(dir_content)
 
-    def traverse_outgoing_dir(self, base_name, dir_name) -> Tuple[int, int]:
+    def traverse_outgoing_dir(self, base_name) -> Tuple[int, int]:
         mod_time, total_size = 0, 0
-        dir_content = self.sftp_connection.listdir(base_name + dir_name)
+        dir_content = self.sftp_connection.listdir(base_name)
         for item in dir_content:
-            metadata = self.sftp_connection.stat(item)
+            metadata = self.sftp_connection.stat(base_name + "/" + item)
             if stat.S_ISDIR(metadata.st_mode):
-                mod_time, total_size = self.traverse_outgoing_dir(f"{base_name}/{dir_name}/", item)
+                mod_time, total_size = self.traverse_outgoing_dir(f"{base_name}/{item}")
             elif stat.S_ISREG(metadata.st_mode):
                 mod_time = max(mod_time, metadata.st_mtime)
                 total_size += metadata.st_size
@@ -92,20 +93,21 @@ class Manager:
     def copy_outgoing_directories(self):
         for directory in self.outgoing_filemanager.dirs:
             if directory.status == ItemStatus.READY:
-                self.copy_traverse_outgoing_directories("./", directory.name)
+                self.copy_traverse_outgoing_directories(f"./{directory.name}")
                 directory.status = ItemStatus.COPIED
 
-    def copy_traverse_outgoing_directories(self, base_path, dir_name):
-        dir_content = self.sftp_connection.listdir(base_path + dir_name)
+    def copy_traverse_outgoing_directories(self, base_path):
+        dir_content = self.sftp_connection.listdir(base_path)
+        if not os.path.exists(f"{self.config.lth_out_temp_dir}/{base_path[2:]}"):
+            os.makedirs(f"{self.config.lth_out_temp_dir}/{base_path[2:]}")
         for item in dir_content:
-            metadata = self.sftp_connection.stat(item)
+            metadata = self.sftp_connection.stat(f"{base_path}/{item}")
             if stat.S_ISDIR(metadata.st_mode):
-                self.sftp_connection.mkdir(f"{base_path}/{dir_name}/{item}")
-                self.copy_traverse_outgoing_directories(f"{base_path}/{dir_name}/", item)
+                self.copy_traverse_outgoing_directories(f"{base_path}/{item}/")
             elif stat.S_ISREG(metadata.st_mode):
                 with alive_bar(metadata.st_size, manual=True) as bar:
-                    file_name = f"{base_path}/{dir_name}/{item}"
-                    self.sftp_connection.get(file_name, self.config.lth_out_temp_dir + "/" + file_name, callback=(lambda a, b: bar(a / b)))
+                    file_name = f"{base_path[2:]}/{item}"
+                    self.sftp_connection.get("./" + file_name, self.config.lth_out_temp_dir + "/" + file_name, callback=(lambda a, b: bar(a / b)))
 
     def check_incoming_files(self):
         current_files = os.listdir(self.config.lth_hercules_rcv_dir)
