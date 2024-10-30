@@ -11,7 +11,7 @@ class Hercules:
 
     def transfer_file(self, file: File):
         infile = file.local_path
-        outfile = self.destination_dir + "/" + file.name
+        outfile = f"{self.destination_dir}/{file.name}"
         resp = requests.get(
             f"http://{self.hercules_monitor_address}/submit?file={infile}&destfile={outfile}&dest={self.destination_address}"
         ).text

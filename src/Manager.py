@@ -1,6 +1,6 @@
 from src.Hercules import Hercules
 from src.Filemanager import Filemanager
-from src.File import ItemStatus, File, Directory
+from src.File import ItemStatus
 from src.Config import Config
 import paramiko
 from paramiko.ssh_exception import SSHException
@@ -21,8 +21,8 @@ class Manager:
         self.key = paramiko.RSAKey.from_private_key_file(config.ldh_ssh_key_file)
         self.ssh.connect(config.ldh_ip, username=config.ldh_username, pkey=self.key)
         self.sftp_connection = self.ssh.open_sftp()
-        self.outgoing_state_file = config.lth_state_file_dir + "/outgoing_state.json"
-        self.incoming_state_file = config.lth_state_file_dir + "/incoming_state.json"
+        self.outgoing_state_file = f"{config.lth_state_file_dir}/outgoing_state.json"
+        self.incoming_state_file = f"{config.lth_state_file_dir}/incoming_state.json"
         self.outgoing_filemanager = Filemanager(config.lth_out_temp_dir)
         self.outgoing_filemanager.load_state(self.outgoing_state_file)
         self.incoming_filemanager = Filemanager(config.lth_hercules_rcv_dir)
@@ -61,7 +61,7 @@ class Manager:
         for item in dir_content:
             metadata = self.sftp_connection.stat(item)
             if stat.S_ISDIR(metadata.st_mode):
-                mod_time, total_size = self.traverse_outgoing_dir(f"./{item}")
+                mod_time, total_size = self.traverse_outgoing_dir(f"{item}")
                 self.outgoing_filemanager.update_dir(item, total_size, mod_time)
             elif stat.S_ISREG(metadata.st_mode):
                 self.outgoing_filemanager.update(item, metadata.st_size, metadata.st_mtime)
@@ -71,9 +71,9 @@ class Manager:
 
     def traverse_outgoing_dir(self, base_name) -> Tuple[int, int]:
         mod_time, total_size = 0, 0
-        dir_content = self.sftp_connection.listdir(base_name)
+        dir_content = self.sftp_connection.listdir(f"{base_name}")
         for item in dir_content:
-            metadata = self.sftp_connection.stat(base_name + "/" + item)
+            metadata = self.sftp_connection.stat(f"{base_name}/{item}")
             if stat.S_ISDIR(metadata.st_mode):
                 mod_time, total_size = self.traverse_outgoing_dir(f"{base_name}/{item}")
             elif stat.S_ISREG(metadata.st_mode):
@@ -93,26 +93,26 @@ class Manager:
     def copy_outgoing_directories(self):
         for directory in self.outgoing_filemanager.dirs:
             if directory.status == ItemStatus.READY:
-                self.copy_traverse_outgoing_directories(f"./{directory.name}")
+                self.copy_traverse_outgoing_directories(f"{directory.name}")
                 directory.status = ItemStatus.COPIED
 
     def copy_traverse_outgoing_directories(self, base_path):
-        dir_content = self.sftp_connection.listdir(base_path)
-        if not os.path.exists(f"{self.config.lth_out_temp_dir}/{base_path[2:]}"):
-            os.makedirs(f"{self.config.lth_out_temp_dir}/{base_path[2:]}")
+        dir_content = self.sftp_connection.listdir(f"./{base_path}")
+        if not os.path.exists(f"{self.config.lth_out_temp_dir}/{base_path}"):
+            os.makedirs(f"{self.config.lth_out_temp_dir}/{base_path}")
         for item in dir_content:
-            metadata = self.sftp_connection.stat(f"{base_path}/{item}")
+            metadata = self.sftp_connection.stat(f"./{base_path}/{item}")
             if stat.S_ISDIR(metadata.st_mode):
                 self.copy_traverse_outgoing_directories(f"{base_path}/{item}/")
             elif stat.S_ISREG(metadata.st_mode):
                 with alive_bar(metadata.st_size, manual=True) as bar:
-                    file_name = f"{base_path[2:]}/{item}"
-                    self.sftp_connection.get("./" + file_name, self.config.lth_out_temp_dir + "/" + file_name, callback=(lambda a, b: bar(a / b)))
+                    file_name = f"{base_path}/{item}"
+                    self.sftp_connection.get(f"./{file_name}", f"{self.config.lth_out_temp_dir}/{file_name}", callback=(lambda a, b: bar(a / b)))
 
     def check_incoming_files(self):
         current_files = os.listdir(self.config.lth_hercules_rcv_dir)
         for f in current_files:
-            metadata = os.stat(self.config.lth_hercules_rcv_dir + "/" + f)
+            metadata = os.stat(f"{self.config.lth_hercules_rcv_dir}/{f}")
             self.incoming_filemanager.update(f, metadata.st_size, metadata.st_mtime)
         self.incoming_filemanager.cleanup_state(current_files)
 

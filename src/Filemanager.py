@@ -32,7 +32,7 @@ class Filemanager:
         self.files = files
 
     def add(self, name: str, size: int, mtime: int):
-        file = File(name, size, mtime, self.temp_dir + "/" + name)
+        file = File(name, size, mtime, f"{self.temp_dir}/{name}")
         self.files.append(file)
 
     def update(self, name: str, size: int, mtime: int):
@@ -67,5 +67,5 @@ class Filemanager:
                 exists = True
                 break
         if not exists:
-            directory = Directory(name, size, mtime, self.temp_dir + "/" + name)
+            directory = Directory(name, size, mtime, f"{self.temp_dir}/{name}")
             self.dirs.append(directory)
