@@ -124,8 +124,12 @@ class Manager:
     def send_outgoing_files(self):
         for file in self.outgoing_filemanager.files:
             if file.status == ItemStatus.COPIED:
-                self.hercules.transfer(file)
+                self.hercules.transfer_file(file)
                 file.status = ItemStatus.SENDING
+        for directory in self.outgoing_filemanager.dirs:
+            if directory.status == ItemStatus.COPIED:
+                self.hercules.transfer_directory(directory)
+                directory.status = ItemStatus.SENDING
 
     def check_sending_status(self):
         for file in self.outgoing_filemanager.files:
@@ -142,6 +146,11 @@ class Manager:
                 print(f"Removing temp file: {file.local_path}")
                 os.remove(file.local_path)
                 file.status = ItemStatus.DELETED
+        for directory in self.outgoing_filemanager.dirs:
+            if directory.status == ItemStatus.SENT and os.path.isdir(directory.local_path):
+                os.remove(file.local_path)
+                directory.status = ItemStatus.DELETED
+
         self.incoming_filemanager.save_state(self.incoming_state_file)
 
     def remove_incoming_temp_files(self):

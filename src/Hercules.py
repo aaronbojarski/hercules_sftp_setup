@@ -1,5 +1,5 @@
 import requests
-from src.File import File, ItemStatus
+from src.File import File, ItemStatus, Directory
 from src.Config import Config
 
 
@@ -9,7 +9,7 @@ class Hercules:
         self.destination_address = config.rth_address
         self.destination_dir = config.rth_target_dir
 
-    def transfer(self, file: File):
+    def transfer_file(self, file: File):
         infile = file.local_path
         outfile = self.destination_dir + "/" + file.name
         resp = requests.get(
@@ -18,6 +18,17 @@ class Hercules:
         file.hercules_file_id = [int(s) for s in resp.split() if s.isdigit()][0]
         print(
             f"HERCULES: SENDING file {file.name} ({file.local_path}) to {self.destination_dir} with file id {file.hercules_file_id}"
+        )
+
+    def transfer_directory(self, dir: Directory):
+        infile = dir.local_path
+        outfile = self.destination_dir + "/" + dir.name
+        resp = requests.get(
+            f"http://{self.hercules_monitor_address}/submit?file={infile}&destfile={outfile}&dest={self.destination_address}"
+        ).text
+        dir.hercules_id = [int(s) for s in resp.split() if s.isdigit()][0]
+        print(
+            f"HERCULES: SENDING directory {dir.name} ({dir.local_path}) to {self.destination_dir} with id {dir.hercules_id}"
         )
 
     def status(self, file: File):
